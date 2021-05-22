@@ -71,11 +71,14 @@ class ChatUser {
    */
 
   handleMessage(jsonData) {
+    console.log("handleMessage", jsonData)
     let msg = JSON.parse(jsonData);
+    console.log("msg", msg)
 
     if (msg.type === "join") this.handleJoin(msg.name);
     else if (msg.type === "chat") this.handleChat(msg.text);
     else if (msg.type === "joke") this.handleJoke();
+    else if (msg.type === "private") this.handlePrivateMessage(msg.recipient, msg.text);
     else if (msg.type === "members") this.handleMemberList();
     else throw new Error(`bad message: ${msg.type}`);
   }
@@ -118,6 +121,21 @@ class ChatUser {
       text: membersList,
       name: "Server"
     }));
+  }
+
+  handlePrivateMessage(recipient, text) {
+    console.log("handlePrivateMessage")
+    const members = this.room.members;
+
+    for (let member of members) {
+      if (member.name === recipient) {
+        member.send(JSON.stringify({
+          type: "chat",
+          text,
+          name: "FakeName"
+        }));
+      }
+    }
   }
 }
 

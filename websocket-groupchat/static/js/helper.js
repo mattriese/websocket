@@ -4,6 +4,7 @@
 returns in json format */
 
 function privMessageParser(message) {
+  console.log("privMessageParser")
   let messageArray = message.split(" ");
   const recipient = messageArray[1];
   const text = messageArray.splice(0, 2).join(" ");

@@ -36,7 +36,7 @@ ws.onmessage = function (evt) {
   } else if (msg.type === "chat") {
     item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`);
   } else {
-    return console.error(`bad message: ${msg}`);
+    return console.error(`bad message Front End: ${msg}`);
   }
 
   $("#messages").append(item);
@@ -79,8 +79,10 @@ $("form").submit(function (evt) {
     return;
   }
   if ($("#m").val().startsWith("/priv ")) {
+    console.log("/priv message seen")
     const message = $("#m").val();
     data = privMessageParser(message);
+    console.log("data", data)
 
     ws.send(JSON.stringify(data));
     return;
@@ -91,3 +93,13 @@ $("form").submit(function (evt) {
 
   $("#m").val("");
 });
+
+
+function privMessageParser(message) {
+  console.log("privMessageParser")
+  let messageArray = message.split(" ");
+  const recipient = messageArray[1];
+  const text = messageArray.splice(0, 2).join(" ");
+
+  return { type: "private", recipient, text };
+}
