@@ -76,6 +76,7 @@ class ChatUser {
     if (msg.type === "join") this.handleJoin(msg.name);
     else if (msg.type === "chat") this.handleChat(msg.text);
     else if (msg.type === "joke") this.handleJoke();
+    else if (msg.type === "members") this.handleMemberList();
     else throw new Error(`bad message: ${msg.type}`);
   }
 
@@ -88,13 +89,38 @@ class ChatUser {
       text: `${this.name} left ${this.room.name}.`,
     });
   }
-
+  /** Handles a joke by sending joke to user
+  * @param jsonData {type: "joke"} 
+  * returns {type: "note", text: "joke here", name: "Server"}
+  */
   handleJoke() {
     //for (let member of this.members) {
-     this.send(JSON.stringify({type: "note",
-                              text: "What do you call eight hobbits? A hob-byte!"}));
-    }
+    this.send(JSON.stringify({
+      type: "note",
+      text: "What do you call eight hobbits? A hob-byte!",
+      name: "Server"
+    }));
+  }
 
+  /** Handles a request for a list of users in room. sends back to user
+  * @param jsonData {type: "members"} 
+  * returns {type: "note", text: "list of members", name: "Server"}
+  */
+  handleMemberList() {
+    console.log("handleMemberList");
+    const members = this.room.members;
+    let membersList = "";
+    for (let member of members) {
+      membersList = membersList + " " + member.name;
+    }
+    this.send(JSON.stringify({
+      type: "note",
+      text: membersList,
+      name: "Server"
+    }));
+  }
 }
+
+
 
 module.exports = ChatUser;

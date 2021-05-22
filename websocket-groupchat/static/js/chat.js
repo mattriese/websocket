@@ -73,6 +73,18 @@ $("form").submit(function (evt) {
     ws.send(JSON.stringify(data));
     return;
   }
+  if ($("#m").val() === "/members") {
+    data = { type: "members" };
+    ws.send(JSON.stringify(data));
+    return;
+  }
+  if ($("#m").val().startsWith("/priv ")) {
+    const message = $("#m").val();
+    data = privMessageParser(message);
+
+    ws.send(JSON.stringify(data));
+    return;
+  }
 
   data = { type: "chat", text: $("#m").val() };
   ws.send(JSON.stringify(data));
